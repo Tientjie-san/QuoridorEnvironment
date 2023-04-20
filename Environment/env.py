@@ -51,11 +51,49 @@ class QuoridorEnv(AECEnv):
 
         self.render_moded = render_mode
 
+        # these are mandatory for the AEC API
+        self._cumulative_rewards = {name: 0 for name in self.agents}
+        self.infos = {name: {} for name in self.agents}
+        self.agent_selection = None
+        self.rewards = None
+        self.terminations = {name: False for name in self.agents}
+        self.truncations = {name: False for name in self.agents}
+
     def reset(self, seed=None, options=None):
         pass
 
-    def step(self, actions):
-        pass
+    def step(self, action):
+        if (
+            self.terminations[self.agent_selection]
+            or self.truncations[self.agent_selection]
+        ):
+            return self._was_dead_step(action)
+
+        current_agent = self.agent_selection
+        chosen_move = convet_discrete_to_quoridor_move(action)
+        self.board.make_move(chosen_move)
+        game_over = self.board.is_terminated
+
+        if game_over:
+            # if the game is over it means that the current agent won, so we set the reward to 1
+            self.set_game_result(1)
+
+        self._accumulate_rewards()
+
+        self.agent_selection = (
+            self._agent_selector.next()
+        )  # Give turn to the next agent
+
+        if self.render_mode == "human":
+            self.render()
+
+    def set_game_result(self, result_val):
+        for i, name in enumerate(self.agents):
+            self.terminations[name] = True
+            # the winning agent gets a reward of 1, the losing agent gets the negative of that reward
+            result_coef = 1 if i == 0 else -1
+            self.rewards[name] = result_val * result_coef
+            self.infos[name] = {"legal_moves": []}
 
     def observe(self, agent):
         observation = board_to_observation(self.board)

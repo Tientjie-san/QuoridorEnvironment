@@ -82,8 +82,8 @@ def board_to_observation(board: Quoridor):
 
     Parameters
     ----------
-    board : Dict[str,List[str]]
-        The board.
+    board : Quoridor
+        The quoridor instancs.
 
     Returns
     -------
@@ -131,48 +131,48 @@ def convert_cell_to_xy(cell: str) -> Tuple[int, int]:
 # for i in range(209):
 #     print(i, convet_discrete_to_quoridor_move(i))
 
-quoridor = Quoridor.init_from_pgn("e2/e8/e3/e7/e1h")
-observation = board_to_observation(quoridor)
-print(observation, end="\n\n\n")
-print("Layer 1: Player 1")
-print(observation[:, :, 0], end="\n\n\n")
-print("Layer 2: Player 2")
-print(observation[:, :, 1], end="\n\n\n")
-print("Layer 3: Horizontal walls")
-print(observation[:, :, 2], end="\n\n\n")
-print("Layer 4: Vertical walls")
-print(observation[:, :, 3], end="\n\n\n")
-print("Layer 5: Player 1 total_walls")
-print(observation[:, :, 4], end="\n\n\n")
-print("Layer 6: Player 2 total_walls")
-print(observation[:, :, 5], end="\n\n\n")
+# quoridor = Quoridor.init_from_pgn("e2/e8/e3/e7/e1h")
+# observation = board_to_observation(quoridor)
+# print(observation, end="\n\n\n")
+# print("Layer 1: Player 1")
+# print(observation[:, :, 0], end="\n\n\n")
+# print("Layer 2: Player 2")
+# print(observation[:, :, 1], end="\n\n\n")
+# print("Layer 3: Horizontal walls")
+# print(observation[:, :, 2], end="\n\n\n")
+# print("Layer 4: Vertical walls")
+# print(observation[:, :, 3], end="\n\n\n")
+# print("Layer 5: Player 1 total_walls")
+# print(observation[:, :, 4], end="\n\n\n")
+# print("Layer 6: Player 2 total_walls")
+# print(observation[:, :, 5], end="\n\n\n")
 
 
-# while not quoridor.is_terminated:
-#     print(quoridor.current_player)
-#     print(quoridor.waiting_player)
-#     print(quoridor.get_legal_moves())
-#     move = input("Enter move: ")
-#     quoridor.make_move(move)
-#     observation = board_to_observation(quoridor)
-#     print(observation.shape)
-#     print(observation, end="\n\n\n")
-#     print("Layer 1: Player 1")
-#     print(observation[:, :, 0], end="\n\n\n")
-#     print("Layer 2: Player 2")
-#     print(observation[:, :, 1], end="\n\n\n")
-#     print("Layer 3: Horizontal walls")
-#     print(observation[:, :, 2], end="\n\n\n")
-#     print("Layer 4: Vertical walls")
-#     print(observation[:, :, 3], end="\n\n\n")
-#     print("Layer 5: Player 1 total_walls")
-#     print(observation[:, :, 4], end="\n\n\n")
-#     print("Layer 6: Player 2 total_walls")
-#     print(observation[:, :, 5], end="\n\n\n")
-print(convert_quoridor_move_to_discrete("h8v"))
+# # while not quoridor.is_terminated:
+# #     print(quoridor.current_player)
+# #     print(quoridor.waiting_player)
+# #     print(quoridor.get_legal_moves())
+# #     move = input("Enter move: ")
+# #     quoridor.make_move(move)
+# #     observation = board_to_observation(quoridor)
+# #     print(observation.shape)
+# #     print(observation, end="\n\n\n")
+# #     print("Layer 1: Player 1")
+# #     print(observation[:, :, 0], end="\n\n\n")
+# #     print("Layer 2: Player 2")
+# #     print(observation[:, :, 1], end="\n\n\n")
+# #     print("Layer 3: Horizontal walls")
+# #     print(observation[:, :, 2], end="\n\n\n")
+# #     print("Layer 4: Vertical walls")
+# #     print(observation[:, :, 3], end="\n\n\n")
+# #     print("Layer 5: Player 1 total_walls")
+# #     print(observation[:, :, 4], end="\n\n\n")
+# #     print("Layer 6: Player 2 total_walls")
+# #     print(observation[:, :, 5], end="\n\n\n")
+# print(convert_quoridor_move_to_discrete("h8v"))
 
 
-action_mask = np.zeros(209, dtype=bool)
-for move in quoridor.get_legal_moves():
-    action_mask[convert_quoridor_move_to_discrete(move)] = True
-print(action_mask[81:].sum())
+# action_mask = np.zeros(209, dtype=bool)
+# for move in quoridor.get_legal_moves():
+#     action_mask[convert_quoridor_move_to_discrete(move)] = True
+# print(action_mask[81:].sum())
