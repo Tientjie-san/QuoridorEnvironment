@@ -69,7 +69,6 @@ class QuoridorEnv(AECEnv):
         ):
             return self._was_dead_step(action)
 
-        current_agent = self.agent_selection
         chosen_move = convet_discrete_to_quoridor_move(action)
         self.board.make_move(chosen_move)
         game_over = self.board.is_terminated
