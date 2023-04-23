@@ -59,8 +59,22 @@ class QuoridorEnv(AECEnv):
         self.terminations = {name: False for name in self.agents}
         self.truncations = {name: False for name in self.agents}
 
-    def reset(self, seed=None, options=None):
-        pass
+    def reset(self, seed=None, return_info=False, options=None):
+        self.has_reset = True
+
+        self.agents = self.possible_agents[:]
+
+        self.board = Quoridor()
+
+        self._agent_selector = agent_selector(self.agents)
+
+        # Mandatrory for AEC API
+        self.agent_selection = self._agent_selector.reset()
+        self.rewards = {name: 0 for name in self.agents}
+        self._cumulative_rewards = {name: 0 for name in self.agents}
+        self.terminations = {name: False for name in self.agents}
+        self.truncations = {name: False for name in self.agents}
+        self.infos = {name: {} for name in self.agents}
 
     def step(self, action):
         if (
