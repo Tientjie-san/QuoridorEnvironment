@@ -1,5 +1,6 @@
 from quoridor import Quoridor
 from pettingzoo.utils import AECEnv, wrappers
+from pettingzoo.utils import AECEnv, wrappers
 import numpy as np
 from gymnasium import spaces
 from pettingzoo import AECEnv
@@ -43,7 +44,9 @@ class QuoridorEnv(AECEnv):
                     "observation": spaces.Box(
                         low=0, high=1, shape=(9, 9, 6), dtype=bool
                     ),
-                    "action_mask": spaces.Box(low=0, high=1, shape=(209,), dtype=bool),
+                    "action_mask": spaces.Box(
+                        low=0, high=1, shape=(209,), dtype=np.int8
+                    ),
                 }
             )
             for name in self.agents
@@ -52,6 +55,7 @@ class QuoridorEnv(AECEnv):
         self.render_moded = render_mode
 
         # these are mandatory for the AEC API
+        self.render_mode = render_mode
         self._cumulative_rewards = {name: 0 for name in self.agents}
         self.infos = {name: {} for name in self.agents}
         self.agent_selection = None
@@ -88,10 +92,17 @@ class QuoridorEnv(AECEnv):
         game_over = self.board.is_terminated
 
         if game_over:
-            # if the game is over it means that the current agent won, so we set the reward to 1
-            self.set_game_result(1)
+            # the game reward value is in perspective of the first agent.
+            if self.agent_selection == self.agents[0]:
+                self.set_game_result(1)
+            else:
+                self.set_game_result(-1)
 
         self._accumulate_rewards()
+        self.infos[self.agent_selection] = {
+            "pgn": self.board.get_pgn(),
+            "turn": len(self.board.moves),
+        }
 
         self.agent_selection = (
             self._agent_selector.next()
@@ -106,11 +117,15 @@ class QuoridorEnv(AECEnv):
             # the winning agent gets a reward of 1, the losing agent gets the negative of that reward
             result_coef = 1 if i == 0 else -1
             self.rewards[name] = result_val * result_coef
-            self.infos[name] = {"legal_moves": []}
+            self.infos[name] = {
+                "legal_moves": [],
+                "pgn": self.board.get_pgn(),
+                "turn": len(self.board.moves),
+            }
 
     def observe(self, agent):
         observation = board_to_observation(self.board)
-        action_mask = np.zeros(209, dtype=bool)
+        action_mask = np.zeros(209, dtype=np.int8)
         for move in self.board.get_legal_moves():
             action_mask[convert_quoridor_move_to_discrete(move)] = True
         return {"observation": observation, "action_mask": action_mask}
@@ -123,3 +138,7 @@ class QuoridorEnv(AECEnv):
 
     def action_space(self, agent):
         return self.action_spaces[agent]
+
+    def close(self):
+        # mandatory for AEC API when render is defined
+        pass

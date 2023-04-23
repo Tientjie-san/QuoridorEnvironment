@@ -121,7 +121,7 @@ class RandomPolicy:
         """
 
         # Get the legal actions
-        legal_actions = [i for i in range(209) if action_mask[i]]
+        legal_actions = np.flatnonzero(action_mask)
         # Get a random action
         action = np.random.choice(legal_actions)
         # Return the action
