@@ -128,8 +128,62 @@ def convert_cell_to_xy(cell: str) -> Tuple[int, int]:
     )
 
 
-# for i in range(209):
-#     print(i, convet_discrete_to_quoridor_move(i))
+def convert_xy_to_cell(x: int, y: int) -> str:
+    """
+    Converts x and y coordinates to a cell of the quoridor board.
+
+    Parameters
+    ----------
+    x : int
+        The x coordinate.
+    y : int
+        The y coordinate.
+
+    Returns
+    -------
+    str
+        The cell.
+    """
+    return chr(ord("a") + y) + str(x + 1)
+
+
+def get_player_pos(observation: np.ndarray, player: int) -> str:
+    """
+    Gets the position of a player from an observation.
+
+    Parameters
+    ----------
+    observation : np.ndarray
+        The observation.
+    player : int
+        The player.
+
+    Returns
+    -------
+    str
+        The position.
+    """
+    x, y = np.where(observation[:, :, player - 1])
+    return convert_xy_to_cell(x[0], y[0])
+
+
+def convert_observation_quoridor_game(observation: np.ndarray, player: int) -> Quoridor:
+    quoridor = Quoridor()
+    quoridor.current_player.pos = get_player_pos(observation, player)
+    quoridor.waiting_player.pos = get_player_pos(observation, 3 - player)
+    quoridor.current_player.walls = np.sum(observation[:, :, 4 - player])
+    quoridor.waiting_player.walls = np.sum(observation[:, :, 5 - player])
+    quoridor.placed_walls = []
+    for wall in quoridor.placed_walls:
+        quoridor._remove_connections(quoridor.board, wall)
+
+
+#     print(quoridor.waiting_player)
+#     print(quoridor.current_player)
+
+
+# # for i in range(209):
+# #     print(i, convet_discrete_to_quoridor_move(i))
 
 # quoridor = Quoridor.init_from_pgn("e2/e8/e3/e7/e1h")
 # observation = board_to_observation(quoridor)
@@ -147,6 +201,7 @@ def convert_cell_to_xy(cell: str) -> Tuple[int, int]:
 # print("Layer 6: Player 2 total_walls")
 # print(observation[:, :, 5], end="\n\n\n")
 
+# convert_observation_quoridor_game(observation, 1)
 
 # # while not quoridor.is_terminated:
 # #     print(quoridor.current_player)

@@ -31,7 +31,11 @@ class ShortestPathPolicy:
         return convert_quoridor_move_to_discrete(action)
 
     def get_shortest_path(
-        self, board: Dict[str, List[str]], pos: str, goal: str
+        self,
+        board: Dict[str, List[str]],
+        current_player_pos: str,
+        waiting_player_pos: str,
+        goal: str,
     ) -> List[str]:
         """Get the shortest path between the player position and the goal
         Parameters
@@ -47,11 +51,18 @@ class ShortestPathPolicy:
         List[str]
             The shortest path.
         """
+        # Take into account the waiting player position for jump moves
 
         # Get the shortest path
-        path = self.bfs(board, pos, goal)
+        path = self.bfs(board, current_player_pos, goal)
         # Return the shortest path
         return path
+
+    def update_board(
+        self, board: Dict[str, List[str]], current_player_pos: str, waiting_player_pos
+    ) -> None:
+        """Update the nodes of the board for the current player taking into account the position of the waiting player"""
+        pass
 
     def bfs(self, board: Dict[str, List[str]], pos: str, goal: str) -> List[str]:
         """Breadth-first search

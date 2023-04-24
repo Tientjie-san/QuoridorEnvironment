@@ -57,7 +57,10 @@ class QuoridorEnv(AECEnv):
         # these are mandatory for the AEC API
         self.render_mode = render_mode
         self._cumulative_rewards = {name: 0 for name in self.agents}
-        self.infos = {name: {} for name in self.agents}
+        self.infos = {
+            name: {"pgn": self.board.get_pgn(), "turn": len(self.board.moves) + 1}
+            for name in self.agents
+        }
         self.agent_selection = None
         self.rewards = None
         self.terminations = {name: False for name in self.agents}
@@ -78,7 +81,10 @@ class QuoridorEnv(AECEnv):
         self._cumulative_rewards = {name: 0 for name in self.agents}
         self.terminations = {name: False for name in self.agents}
         self.truncations = {name: False for name in self.agents}
-        self.infos = {name: {} for name in self.agents}
+        self.infos = {
+            name: {"pgn": self.board.get_pgn(), "turn": len(self.board.moves) + 1}
+            for name in self.agents
+        }
 
     def step(self, action):
         if (
@@ -101,7 +107,7 @@ class QuoridorEnv(AECEnv):
         self._accumulate_rewards()
         self.infos[self.agent_selection] = {
             "pgn": self.board.get_pgn(),
-            "turn": len(self.board.moves),
+            "turn": len(self.board.moves) + 1,
         }
 
         self.agent_selection = (
