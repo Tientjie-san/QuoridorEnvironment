@@ -110,8 +110,6 @@ class RandomPolicy:
     def get_action(self, action_mask) -> int:
         """Get a random action
         ----------
-        observation : np.array
-            The observation.
         action_mask : np.array
             The action mask.
         Returns
@@ -119,10 +117,4 @@ class RandomPolicy:
         int
             The discrete action.
         """
-
-        # Get the legal actions
-        legal_actions = np.flatnonzero(action_mask)
-        # Get a random action
-        action = np.random.choice(legal_actions)
-        # Return the action
-        return action
+        return np.random.choice(np.flatnonzero(action_mask))

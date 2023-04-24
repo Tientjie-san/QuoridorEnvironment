@@ -1,4 +1,5 @@
 from Policies.policy import RandomPolicy, ShortestPathPolicy
+from quoridor import Quoridor
 
 
 class RandomAgent:
@@ -10,9 +11,15 @@ class RandomAgent:
         self.shortest_path_policy = ShortestPathPolicy()
         self.random_policy = RandomPolicy()
 
-    def act(self, observation, reward, info):
+    def act(self, observation, reward):
         walls = observation["observation"][:, :, 2:4]
         if walls == 0:
             return self.shortest_path_policy.get_action(observation["action_mask"])
         else:
             return self.random_policy.get_action(observation["action_mask"])
+
+    def convert_observation_to_game(self, observation):
+        """Convert the observation to a quoridor game"""
+        game = Quoridor()
+        board.board = observation["observation"][:, :, 0:2]
+        return board
