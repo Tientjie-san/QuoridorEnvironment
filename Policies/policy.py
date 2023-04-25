@@ -25,7 +25,10 @@ class ShortestPathPolicy:
         """
 
         action = self.get_shortest_path(
-            game.board, game.current_player.pos, game.current_player.goal
+            game.board,
+            game.current_player.pos,
+            game.waiting_player.pos,
+            game.current_player.goal,
         )[1]
 
         return convert_quoridor_move_to_discrete(action)
@@ -54,6 +57,7 @@ class ShortestPathPolicy:
         # Take into account the waiting player position for jump moves
 
         # Get the shortest path
+        self.update_board(board, current_player_pos, waiting_player_pos)
         path = self.bfs(board, current_player_pos, goal)
         # Return the shortest path
         return path
@@ -62,7 +66,37 @@ class ShortestPathPolicy:
         self, board: Dict[str, List[str]], current_player_pos: str, waiting_player_pos
     ) -> None:
         """Update the nodes of the board for the current player taking into account the position of the waiting player"""
-        pass
+        # check if the other player is in range of current player for jumping moves
+        if waiting_player_pos in board[current_player_pos]:
+            board[current_player_pos].remove(waiting_player_pos)
+            # same row
+            if current_player_pos[1] == waiting_player_pos[1]:
+                if current_player_pos[0] > waiting_player_pos[0]:
+                    pos_behind = (
+                        chr(ord(current_player_pos[0]) - 2) + current_player_pos[1]
+                    )
+                else:
+                    pos_behind = (
+                        chr(ord(current_player_pos[0]) + 2) + current_player_pos[1]
+                    )
+
+            elif current_player_pos[0] == waiting_player_pos[0]:  # same column
+                if current_player_pos[1] > waiting_player_pos[1]:
+                    pos_behind = current_player_pos[0] + chr(
+                        ord(current_player_pos[1]) - 2
+                    )
+                else:
+                    pos_behind = current_player_pos[0] + chr(
+                        ord(current_player_pos[1]) + 2
+                    )
+            if pos_behind in board[waiting_player_pos]:
+                board[current_player_pos].append(pos_behind)
+            else:
+                board[current_player_pos].extend(
+                    pos
+                    for pos in board[waiting_player_pos]
+                    if pos != current_player_pos
+                )
 
     def bfs(self, board: Dict[str, List[str]], pos: str, goal: str) -> List[str]:
         """Breadth-first search
