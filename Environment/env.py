@@ -105,10 +105,11 @@ class QuoridorEnv(AECEnv):
                 self.set_game_result(-1)
 
         self._accumulate_rewards()
-        self.infos[self.agent_selection] = {
-            "pgn": self.board.get_pgn(),
-            "turn": len(self.board.moves) + 1,
-        }
+        for name in self.agents:
+            self.infos[name] = {
+                "pgn": self.board.get_pgn(),
+                "turn": len(self.board.moves) + 1,
+            }
 
         self.agent_selection = (
             self._agent_selector.next()
