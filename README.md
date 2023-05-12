@@ -11,8 +11,7 @@ Quoridor is a two-player board game where each player tries to reach the opposit
 To use QuoridorEnvironment, you will need:
 
 - Python 3.6 or later
-- The `numpy` package
-- The `pygame` package
+- Poetry (for managing dependencies)
 
 ## Installation
 
@@ -21,7 +20,7 @@ To install QuoridorEnvironment, you can simply clone the repository and install 
 ```
 git clone https://github.com/<your-username>/QuoridorEnvironment.git
 cd QuoridorEnvironment
-pip install -r requirements.txt
+poetry install
 ```
 
 ## Usage
@@ -31,16 +30,16 @@ Once you have installed the necessary packages, you can start using QuoridorEnvi
 - **Play against the built-in AI:** The project comes with a built-in AI that can play against you. To start a game against the AI, run the following command:
 
   ```
-  python play.py
+  poetry run python play.py
   ```
 
 - **Create your own agent:** QuoridorEnvironment provides a framework for building your own agent that can play against other agents. To create your own agent, simply create a new Python file in the `agents` directory that defines a class that inherits from the `Agent` class in `agent.py`. You can then run a tournament between your agent and others using the following command:
 
   ```
-  python tournament.py
+  poetry run python tournament.py
   ```
 
-- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `environment.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves. For an example on how to use the environment see `simple.py`
+- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `env.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves. For an example on how to use the environment see `simple.py`
 
 ## Customization
 Some ways you can customize the project include:
