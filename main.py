@@ -29,8 +29,6 @@ for i in range(EPISODES):
             break
 
         action = agents[agent].act(observation, reward, info)
-        if action == None:
-            raise Exception("action is None")
         quoridor_env.step(action)
 
 
