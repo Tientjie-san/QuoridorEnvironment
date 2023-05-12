@@ -39,7 +39,7 @@ Once you have installed the necessary packages, you can start using QuoridorEnvi
   poetry run python tournament.py
   ```
 
-- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `environment.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves. For an example on how to use the environment see `simple.py`
+- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `env.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves. For an example on how to use the environment see `simple.py`
 
 ## Customization
 Some ways you can customize the project include:
