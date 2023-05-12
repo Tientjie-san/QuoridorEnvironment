@@ -4,7 +4,7 @@ Welcome to QuoridorEnvironment, a project aimed at creating a game environment f
 
 ## Overview
 
-Quoridor is a two-player board game where each player tries to reach the opposite end of the board before their opponent. The game is played on a grid of squares, and each player has a number of walls that can be placed to block the other player's progress. QuoridorEnvironment provides a way to simulate this game, and provides a framework for building agents that can play against each other.
+Quoridor is a two-player board game where each player tries to reach the opposite end of the board before their opponent. The game is played on a grid of squares, and each player has a number of walls that can be placed to block the other player's progress. QuoridorEnvironment provides a way to simulate this game, and provides a framework for building agents that can play against each other. The QuordorEnv class is a subclass of PettingsZoo AECEnv
 
 ## Requirements
 
