@@ -1,7 +1,6 @@
 import time
 from Environment import QuoridorEnv, env
 from Agents.random_agent import RandomAgent, RandomShortestPathAgent
-from Storage import TrialStorage, Trial
 
 quoridor_env: QuoridorEnv = env()
 EPISODES = 3
