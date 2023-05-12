@@ -590,6 +590,18 @@ pluggy = ">=0.12,<2.0"
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "python-quoridor"
+version = "0.1.2"
+description = "python-quoridor is a a quoridor library for python, with move generation, move validation and support for common formats"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "python_quoridor-0.1.2-py3-none-any.whl", hash = "sha256:866f39f723a3e30455f4748973feb8936997f3b6f8b7460ea80e7518fe26110f"},
+    {file = "python_quoridor-0.1.2.tar.gz", hash = "sha256:b6363404f8498be621ac6ba1f4b1e69dcc056c52f845638ec95d342f22124a46"},
+]
+
+[[package]]
 name = "requests"
 version = "2.28.2"
 description = "Python HTTP for Humans."
@@ -761,4 +773,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11"
-content-hash = "5362ce5d9b285560839eee9f3ff4bd26fb572cde59930fa0b835186a6df6e4d9"
+content-hash = "05e24ca39ba654dd7f0bad50601830bd11c03779215cb9ada9155ff410e9c5c5"
