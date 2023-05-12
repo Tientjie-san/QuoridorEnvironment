@@ -1,11 +1,10 @@
-from Environment import QuoridorEnv, env
-from Vizualiser.vizualiser import QuoridorVizualiser
-from Agents.random_agent import RandomAgent, RandomShortestPathAgent
 import time
+from Environment import QuoridorEnv, env
+from Agents.random_agent import RandomAgent, RandomShortestPathAgent
+from Storage import TrialStorage, Trial
 
 quoridor_env: QuoridorEnv = env()
-quoridor_vizualiser = QuoridorVizualiser()
-EPISODES = 100
+EPISODES = 3
 
 agents = {
     "player_1": RandomShortestPathAgent(quoridor_env.action_spaces["player_1"], 1),
@@ -40,10 +39,17 @@ total_time = end_time - start_time
 print(f"Total time taken: {total_time:.2f} seconds")
 print(f"win rate: {(wins / EPISODES *100):.2f}% ")
 print(f"average turns: {(total_turns / EPISODES):.2f}")
+print(games)
+
 
 # TODO Store games to your data store
-
-# from pettingzoo.test import api_test  # noqa: E402
-
-# if __name__ == "__main__":
-#     api_test(QuoridorEnv(), num_cycles=1_000_000)
+TrialStorage().upload_trial(
+    Trial(
+        games,
+        wins / EPISODES * 100,
+        type(agents["player_1"]).__name__,
+        type(agents["player_2"]).__name__,
+        total_time,
+        total_turns / EPISODES,
+    )
+)

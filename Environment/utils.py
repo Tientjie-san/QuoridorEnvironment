@@ -1,9 +1,9 @@
-from typing import Dict, List, Tuple
+from typing import Tuple
 import numpy as np
 from quoridor import Quoridor
 
 
-def convet_discrete_to_quoridor_move(discrete_move: int) -> str:
+def convert_discrete_to_quoridor_move(discrete_move: int) -> str:
     """
     Converts a discrete move Discrete(209) to a quoridor move.
 
@@ -66,13 +66,10 @@ def convert_quoridor_move_to_discrete(move: str) -> int:
         The discrete move.
     """
     if len(move) == 2:
-        # pawn move
         return (ord(move[0]) - ord("a")) + 9 * (int(move[1]) - 1)
     if move[2] == "h":
-        # horizontal wall
         return 81 + (ord(move[0]) - ord("a")) + 8 * (int(move[1]) - 1)
     if move[2] == "v":
-        # vertical wall
         return 145 + (ord(move[0]) - ord("a")) + 8 * (int(move[1]) - 1)
 
 
@@ -168,66 +165,42 @@ def get_player_pos(observation: np.ndarray, player: int) -> str:
 
 
 def convert_observation_quoridor_game(observation: np.ndarray, player: int) -> Quoridor:
+    """
+    Converts an observation to a quoridor game.
+
+    Parameters
+    ----------
+    observation : np.ndarray
+        The observation.
+    player : int
+        The current player.
+
+    Returns
+    -------
+    Quoridor
+        The quoridor game.
+    """
+
     quoridor = Quoridor()
+    if player == 1:
+        quoridor.current_player = quoridor.player1
+        quoridor.waiting_player = quoridor.player2
+    else:
+        quoridor.current_player = quoridor.player2
+        quoridor.waiting_player = quoridor.player1
+
     quoridor.current_player.pos = get_player_pos(observation, player)
     quoridor.waiting_player.pos = get_player_pos(observation, 3 - player)
     quoridor.current_player.walls = np.sum(observation[:, :, 4 - player])
     quoridor.waiting_player.walls = np.sum(observation[:, :, 5 - player])
     quoridor.placed_walls = []
+    for channel in range(2, 4):
+        x, y = np.where(observation[:, :, channel])
+        for i in range(len(x)):
+            if channel == 2:
+                quoridor.placed_walls.append(convert_xy_to_cell(x[i], y[i]) + "h")
+            else:
+                quoridor.placed_walls.append(convert_xy_to_cell(x[i], y[i]) + "v")
     for wall in quoridor.placed_walls:
         quoridor._remove_connections(quoridor.board, wall)
-
-
-#     print(quoridor.waiting_player)
-#     print(quoridor.current_player)
-
-
-# # for i in range(209):
-# #     print(i, convet_discrete_to_quoridor_move(i))
-
-# quoridor = Quoridor.init_from_pgn("e2/e8/e3/e7/e1h")
-# observation = board_to_observation(quoridor)
-# print(observation, end="\n\n\n")
-# print("Layer 1: Player 1")
-# print(observation[:, :, 0], end="\n\n\n")
-# print("Layer 2: Player 2")
-# print(observation[:, :, 1], end="\n\n\n")
-# print("Layer 3: Horizontal walls")
-# print(observation[:, :, 2], end="\n\n\n")
-# print("Layer 4: Vertical walls")
-# print(observation[:, :, 3], end="\n\n\n")
-# print("Layer 5: Player 1 total_walls")
-# print(observation[:, :, 4], end="\n\n\n")
-# print("Layer 6: Player 2 total_walls")
-# print(observation[:, :, 5], end="\n\n\n")
-
-# convert_observation_quoridor_game(observation, 1)
-
-# # while not quoridor.is_terminated:
-# #     print(quoridor.current_player)
-# #     print(quoridor.waiting_player)
-# #     print(quoridor.get_legal_moves())
-# #     move = input("Enter move: ")
-# #     quoridor.make_move(move)
-# #     observation = board_to_observation(quoridor)
-# #     print(observation.shape)
-# #     print(observation, end="\n\n\n")
-# #     print("Layer 1: Player 1")
-# #     print(observation[:, :, 0], end="\n\n\n")
-# #     print("Layer 2: Player 2")
-# #     print(observation[:, :, 1], end="\n\n\n")
-# #     print("Layer 3: Horizontal walls")
-# #     print(observation[:, :, 2], end="\n\n\n")
-# #     print("Layer 4: Vertical walls")
-# #     print(observation[:, :, 3], end="\n\n\n")
-# #     print("Layer 5: Player 1 total_walls")
-# #     print(observation[:, :, 4], end="\n\n\n")
-# #     print("Layer 6: Player 2 total_walls")
-# #     print(observation[:, :, 5], end="\n\n\n")
-# print(convert_quoridor_move_to_discrete("h8v"))
-
-
-# action_mask = np.zeros(209, dtype=bool)
-# for move in quoridor.get_legal_moves():
-#     action_mask[convert_quoridor_move_to_discrete(move)] = True
-# print(action_mask[81:].sum())
+    return quoridor
