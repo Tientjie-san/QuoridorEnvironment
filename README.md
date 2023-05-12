@@ -40,17 +40,13 @@ Once you have installed the necessary packages, you can start using QuoridorEnvi
   python tournament.py
   ```
 
-- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `environment.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves.
+- **Use the API:** If you want to integrate QuoridorEnvironment into your own project, you can use the API provided by the `environment.py` file. This file defines a `QuoridorEnvironment` class that provides methods for simulating the game and making moves. For an example on how to use the environment see `simple.py`
 
 ## Customization
-
-QuoridorEnvironment is designed to be flexible and customizable. You can modify the game rules, the AI behavior, and the user interface to suit your needs. Some ways you can customize the project include:
-
-- **Change the game rules:** You can modify the game rules by changing the `Board` class in `board.py`. For example, you can change the size of the board, the number of walls each player has, and the win condition.
+Some ways you can customize the project include:
 
 - **Create your own AI:** You can create your own AI by defining a new class that inherits from the `Agent` class in `agent.py`. You can then modify the behavior of the AI by implementing the `get_move` method.
 
-- **Change the user interface:** You can modify the user interface by changing the `Game` class in `game.py`. For example, you can change the colors and fonts used in the game, or add new features such as sound effects or animations.
 
 ## License
 
