@@ -1,6 +1,6 @@
 from quoridor import Quoridor
 from Environment import QuoridorEnv, env
-from Agents.random_agent import RandomAgent, RandomShortestPathAgent
+from Agents.random_agent import RandomShortestPathAgent
 from Agents.agent import Agent
 from Environment.utils import convert_quoridor_move_to_discrete
 
