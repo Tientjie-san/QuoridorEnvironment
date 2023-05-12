@@ -45,7 +45,7 @@ Once you have installed the necessary packages, you can start using QuoridorEnvi
 ## Customization
 Some ways you can customize the project include:
 
-- **Create your own AI:** You can create your own AI by defining a new class that inherits from the `Agent` class in `agent.py`. You can then modify the behavior of the AI by implementing the `get_move` method.
+- **Create your own AI:** You can create your own AI by defining a new class that inherits from the `Agent` class in `agent.py`. You can then modify the behavior of the AI by implementing the `act` method.
 
 
 ## License
