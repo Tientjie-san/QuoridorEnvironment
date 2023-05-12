@@ -3,9 +3,10 @@
 
 from quoridor import Quoridor
 from Policies.policy import RandomPolicy, ShortestPathPolicy
+from .agent import Agent
 
 
-class RandomAgent:
+class RandomAgent(Agent):
     """The world's simplest agent!"""
 
     def __init__(self, action_space, player):
@@ -34,7 +35,7 @@ class RandomAgent:
         return self.random_policy.get_action(observation["action_mask"])
 
 
-class RandomShortestPathAgent:
+class RandomShortestPathAgent(Agent):
     """Agent that chooses random action when player has walls and
     shortest path when player has no walls"""
 
