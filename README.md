@@ -33,7 +33,9 @@ Once you have installed the necessary packages, you can start using QuoridorEnvi
   poetry run python play.py
   ```
 
-- **Create your own agent:** QuoridorEnvironment provides a framework for building your own agent that can play against other agents. To create your own agent, simply create a new Python file in the `agents` directory that defines a class that inherits from the `Agent` class in `agent.py`. You can then run a tournament between your agent and others using the following command:
+- **Create your own agent:** QuoridorEnvironment provides a framework for building your own agent that can play against other agents. To create your own agent, simply create a new Python file in the `agents` directory that defines a class that inherits from the `Agent` class in `agent.py`.
+In `tournament.py` you can add your agent to the `AGENTS` variable. 
+You can then run a tournament between your agent and others using the following command:
 
   ```
   poetry run python tournament.py

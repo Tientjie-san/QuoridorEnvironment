@@ -7,8 +7,9 @@ from collections import Counter
 from Agents import RandomAgent, RandomShortestPathAgent
 from Agents.agent import Agent
 from Environment import QuoridorEnv, env
+from play import HumanAgent
 
-AGENTS = [RandomAgent, RandomShortestPathAgent]
+AGENTS = [RandomAgent, RandomShortestPathAgent, HumanAgent]
 
 
 class Tournament:
