@@ -1,5 +1,5 @@
 from Environment import QuoridorEnv, env
-from Agents import RandomShortestPathAgent, HumanAgent
+from Agents import RandomShortestPathAgent, HumanAgent, MCTSAgent
 from Agents.agent import Agent
 
 
@@ -7,7 +7,7 @@ def play():
     quoridor_env: QuoridorEnv = env()
     agents: dict[str, Agent] = {
         "player_1": HumanAgent(),
-        "player_2": RandomShortestPathAgent(quoridor_env.action_spaces["player_1"], 2),
+        "player_2": MCTSAgent(quoridor_env.action_spaces["player_2"], 2),
     }
 
     quoridor_env.reset()
@@ -23,5 +23,6 @@ def play():
         quoridor_env.step(action)
 
 
+print("Hello World")
 if __name__ == "__main__":
     play()
