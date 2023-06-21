@@ -3,12 +3,15 @@ from .agent import Agent
 from Environment.utils import (
     convert_quoridor_move_to_discrete,
     convert_observation_quoridor_game,
+    convert_discrete_to_quoridor_move,
 )
 from Policies.policy import ShortestPathPolicy
 from math import sqrt, log
 from copy import deepcopy
 import random
 from typing import Set
+import time
+import graphviz
 
 EXPLORATION_CONSTANT = 1.414
 
@@ -70,9 +73,13 @@ class MCTSAgent(Agent):
                 return True
             return False
 
-    def __init__(
-        self, action_space=None, player=None, max_iterations=1000, max_time=10
-    ):
+        def __str__(self) -> str:
+            return f"action: {self.action}, visits: {self.visits}, total_reward: {self.total_reward}"
+
+        def __repr__(self) -> str:
+            return f"action: {self.action}, visits: {self.visits}, total_reward: {self.total_reward}"
+
+    def __init__(self, action_space=None, player=None, max_iterations=500, max_time=10):
         super().__init__(action_space, player)
         self.max_iterations = max_iterations
         self.max_time = max_time
@@ -88,7 +95,6 @@ class MCTSAgent(Agent):
         )
         # if walls are not available, use shortest path policy, to speed up the game
         if quoridor.current_player.walls == 0:
-            print(quoridor.player1.walls, quoridor.player2.walls)
             print("using shortest path policy")
             return ShortestPathPolicy().get_action(quoridor)
         current_state = self._convert_quoridor_to_state(quoridor)
@@ -96,7 +102,16 @@ class MCTSAgent(Agent):
         if self.root is None:
             self.root = self.Node(current_state)
         action = self._search(self.root)
+        self.root = self._get_child_node(self.root, action)
         return convert_quoridor_move_to_discrete(action)
+
+    def _get_child_node(self, node, action):
+        """
+        Returns the child node with the given action
+        """
+        for child in node.children:
+            if child.action == action:
+                return child
 
     def _expand(self, node: Node):
         """
@@ -119,10 +134,11 @@ class MCTSAgent(Agent):
         perform a rollout a from the given node
         """
         quoridor = self._convert_state_to_quoridor(node.state)
-        while not quoridor.is_terminated():
-            quoridor.make_move(self._rollout_policy(quoridor))
+        while not quoridor.is_terminated:
+            move = self._rollout_policy(quoridor)
+            quoridor.make_move(move)
 
-        if quoridor.current_player == self.player:
+        if quoridor.current_player.id == self.player:
             return 1
         else:
             return -1
@@ -131,7 +147,12 @@ class MCTSAgent(Agent):
         """
         Selects a random action from the legal actions given the current state
         """
-        return random.choice(quoridor.get_legal_moves())
+        # if quoridor.current_player.walls > 0:
+        return random.choice(list(quoridor.get_legal_pawn_moves()))
+        # else:
+        return convert_discrete_to_quoridor_move(
+            ShortestPathPolicy().get_action(quoridor)
+        )
 
     def _backpropagate(self, node: Node, reward):
         """
@@ -141,6 +162,7 @@ class MCTSAgent(Agent):
             node.visits += 1
             node.total_reward += reward
             node = node.parent
+            reward *= -1
 
     def _best_child(self, node):
         """
@@ -155,18 +177,27 @@ class MCTSAgent(Agent):
         """
         Returns the best action from the given node
         """
-        return max(node.children, key=lambda x: x.visits).action
+        best_node = max(node.children, key=lambda x: x.total_reward)
+        return best_node.action
 
     def _search(self, root):
         """
         Searches the tree starting from the given root node
         """
+        print("searching")
+        start = time.time()
 
-        for _ in range(self.max_iterations):
+        for i in range(self.max_iterations):
+            print(f"iteration: {i}")
             node = self._tree_traversal(root)
             reward = self._rollout(node)
             self._backpropagate(node, reward)
-
+            # graph = self.create_graphviz_tree(root)
+            # graph.render("mcts_tree", format="png", view=True)
+            # print the children of the root node sorted by total reward
+        print(sorted(root.children, key=lambda x: x.total_reward, reverse=True)[:10])
+        end = time.time()
+        print(f"search time: {end-start}")
         return self._best_action(root)
 
     def _tree_traversal(self, node):
@@ -176,7 +207,7 @@ class MCTSAgent(Agent):
         while not node.is_terminal():
             if len(node.children) == 0:
                 self._expand(node)
-                return random.choice(list(node.children.values()))
+                return random.choice(list(node.children))
             else:
                 node = self._best_child(node)
         return node
@@ -185,7 +216,7 @@ class MCTSAgent(Agent):
         """
         Calculates the UCT score of the given node
         """
-        return node.wins / node.visits + EXPLORATION_CONSTANT * sqrt(
+        return node.total_reward / node.visits + EXPLORATION_CONSTANT * sqrt(
             log(node.parent.visits) / node.visits
         )
 
@@ -214,3 +245,22 @@ class MCTSAgent(Agent):
             quoridor.placed_walls,
             quoridor.current_player,
         )
+
+    def create_graphviz_tree(self, root_node):
+        dot = graphviz.Digraph()
+        dot.attr("node", shape="circle")  # Set node shape to circle
+
+        def add_node_to_graph(node):
+            dot.node(str(id(node)), str(node))  # Add node to the graph
+
+            for child in node.children:
+                dot.edge(
+                    str(id(node)),
+                    f"{child.action} total_reward: {child.total_reward} total_visits: {child.visits}",
+                    label=str(child.action),
+                )  # Add edge from parent to child
+                # add_node_to_graph(child)  # Recursively add child nodes
+
+        add_node_to_graph(root_node)
+
+        return dot
