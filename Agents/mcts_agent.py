@@ -260,7 +260,7 @@ class MCTSAgent(Agent):
 
         for i in range(self.max_iterations):
             if i % 1000 == 0:
-                print(i)
+                print(f"iteration {i+1}")
 
             node = self._tree_traversal(root)
             reward = self._rollout(node)
