@@ -189,10 +189,11 @@ def convert_observation_quoridor_game(observation: np.ndarray, player: int) -> Q
         quoridor.current_player = quoridor.player2
         quoridor.waiting_player = quoridor.player1
 
-    quoridor.current_player.pos = get_player_pos(observation, player)
-    quoridor.waiting_player.pos = get_player_pos(observation, 3 - player)
-    quoridor.current_player.walls = np.sum(observation[:, :, 4 - player])
-    quoridor.waiting_player.walls = np.sum(observation[:, :, 5 - player])
+    quoridor.player1.pos = get_player_pos(observation, 1)
+    quoridor.player2.pos = get_player_pos(observation, 2)
+    # layer 5 is the walls of player 1, so index 4, layer 6 is the walls of player 2, so index 5
+    quoridor.player1.walls = np.sum(observation[:, :, 4])
+    quoridor.player2.walls = np.sum(observation[:, :, 5])
     quoridor.placed_walls = []
     for channel in range(2, 4):
         x, y = np.where(observation[:, :, channel])

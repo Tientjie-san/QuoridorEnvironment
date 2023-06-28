@@ -53,16 +53,32 @@ def test_board_to_observation():
 def test_convert_observation_quoridor_game():
     quoridor = Quoridor.init_from_pgn("e2/e8/e3/e7/e1h/e3v/e2h")
     observation = board_to_observation(quoridor)
+    print("layer 1: Player 1 position:\n", observation[:, :, 0])
+    print("layer 2: Player 2 position\n", observation[:, :, 1])
+    print("layer 3: Player 1 placed walls \n", observation[:, :, 2])
+    print("layer 4: Player 2 placed walls \n", observation[:, :, 3])
+    print("layer 5: Player 1 total walls\n", observation[:, :, 4])
+    print("layer6: Player 2 total walls\n", observation[:, :, 5])
+
     board = convert_observation_quoridor_game(observation, 1)
     assert board.current_player.id == 1
     assert set(board.placed_walls) == set(["e1h", "e2h", "e3v"])
     assert board.player1.pos == "e3"
     assert board.player2.pos == "e7"
+    assert board.player1.walls == 8
+    assert board.player2.walls == 9
+    assert board.current_player.walls == 8
+    assert board.waiting_player.walls == 9
+
     board = convert_observation_quoridor_game(observation, 2)
     assert board.current_player.id == 2
     assert set(board.placed_walls) == set(["e1h", "e2h", "e3v"])
     assert board.player1.pos == "e3"
     assert board.player2.pos == "e7"
+    assert board.player1.walls == 8
+    assert board.player2.walls == 9
+    assert board.current_player.walls == 9
+    assert board.waiting_player.walls == 8
 
 
 def test_env():

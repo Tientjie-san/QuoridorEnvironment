@@ -83,7 +83,7 @@ from quoridor import Quoridor
 import numpy as np
 from gymnasium import spaces
 from pettingzoo import AECEnv
-from pettingzoo.utils import AECEnv, wrappers
+from pettingzoo.utils import wrappers
 from pettingzoo.utils.agent_selector import agent_selector
 from pettingzoo.test import api_test  # noqa: E402
 from Environment.utils import (
@@ -93,18 +93,11 @@ from Environment.utils import (
 )
 
 
-def env(render_mode=None):
-    """Create a Quoridor environment"""
-    env = QuoridorEnv(
-        render_mode=render_mode,
-    )
-    env = wrappers.TerminateIllegalWrapper(env, illegal_reward=-1)
-    env = wrappers.AssertOutOfBoundsWrapper(env)
-    env = wrappers.OrderEnforcingWrapper(env)
-    return env
-
-
 class QuoridorEnv(AECEnv):
+    """
+    Quoridor environment class.
+    """
+
     metadata = {
         "render_modes": ["human", "ansi", "rgb_array"],
         "name": "quoridor_v0",
@@ -112,7 +105,7 @@ class QuoridorEnv(AECEnv):
         "render_fps": 2,
     }
 
-    def __init__(self, render_mode=None):
+    def __init__(self, render_mode: str = None):
         super().__init__()
         self.board = Quoridor()
         self.agents = ["player_1", "player_2"]
@@ -150,10 +143,22 @@ class QuoridorEnv(AECEnv):
 
     def reset(
         self,
-        seed=None,
-        options=None,
-        return_info=False,
-    ):
+        seed: int = None,
+        options: dict = None,
+        return_info: bool = False,
+    ) -> None:
+        """
+        Reset the environment.
+
+        Parameters:
+        -----------
+        seed: int, optional
+            The seed value for the random number generator (default is None).
+        options: dict, optional
+            Additional options for the reset (default is None).
+        return_info: bool, optional
+            Flag indicating whether to return additional info (default is False).
+        """
         self.has_reset = True
 
         self.agents = self.possible_agents[:]
@@ -162,7 +167,7 @@ class QuoridorEnv(AECEnv):
 
         self._agent_selector = agent_selector(self.agents)
 
-        # Mandatrory for AEC API
+        # Mandatory for AEC API
         self.agent_selection = self._agent_selector.reset()
         self.rewards = {name: 0 for name in self.agents}
         self._cumulative_rewards = {name: 0 for name in self.agents}
@@ -173,9 +178,14 @@ class QuoridorEnv(AECEnv):
             for name in self.agents
         }
 
-    def step(self, action):
+    def step(self, action) -> None:
         """
-        Step forward in the environment with the given action
+        Take a step in the environment.
+
+        Parameters:
+        -----------
+        action: Any
+            The action to take in the environment.
         """
         if (
             self.terminations[self.agent_selection]
@@ -208,9 +218,14 @@ class QuoridorEnv(AECEnv):
         if self.render_mode == "human":
             self.render()
 
-    def set_game_result(self, result_val):
+    def set_game_result(self, result_val) -> None:
         """
-        update the rewards and terminations for the agents based on the game result
+        Set the game result and update rewards and terminations for the agents.
+
+        Parameters:
+        -----------
+        result_val: Any
+            The result value indicating the game outcome.
         """
         for i, name in enumerate(self.agents):
             self.terminations[name] = True
@@ -223,25 +238,91 @@ class QuoridorEnv(AECEnv):
                 "turn": len(self.board.moves),
             }
 
-    def observe(self, agent):
+    def observe(self, agent) -> dict:
+        """
+        Observe the current state of the environment for a specific agent.
+
+        Parameters:
+        -----------
+        agent: str
+            The name of the agent.
+
+        Returns:
+        --------
+        observation: dict
+            A dictionary containing the observation and action mask.
+        """
         observation = board_to_observation(self.board)
         action_mask = np.zeros(209, dtype=np.int8)
         for move in self.board.get_legal_moves():
             action_mask[convert_quoridor_move_to_discrete(move)] = True
         return {"observation": observation, "action_mask": action_mask}
 
-    def render(self):
-        pass
+    def render(self) -> None:
+        """
+        Render the environment.
+        """
 
-    def observation_space(self, agent):
+    def observation_space(self, agent) -> spaces.Dict:
+        """
+        Get the observation space for a specific agent.
+
+        Parameters:
+        -----------
+        agent: str
+            The name of the agent.
+
+        Returns:
+        --------
+        observation_space: spaces.Dict
+            The observation space.
+        """
         return self.observation_spaces[agent]
 
-    def action_space(self, agent):
+    def action_space(self, agent) -> spaces.Discrete:
+        """
+        Get the action space for a specific agent.
+
+        Parameters:
+        -----------
+        agent: str
+            The name of the agent.
+
+        Returns:
+        --------
+        action_space: spaces.Discrete
+            The action space.
+        """
         return self.action_spaces[agent]
 
-    def close(self):
-        # mandatory for AEC API when render is defined
-        pass
+    def close(self) -> None:
+        """
+        Close the environment.
+        """
+        # Mandatory for AEC API when render is defined
+
+
+def env(render_mode: str = None) -> QuoridorEnv:
+    """
+    Create a Quoridor environment.
+
+    Parameters:
+    -----------
+    render_mode: str, optional
+        The render mode for the environment (default is None).
+
+    Returns:
+    --------
+    env: QuoridorEnv
+        The created Quoridor environment.
+    """
+    env = QuoridorEnv(
+        render_mode=render_mode,
+    )
+    env = wrappers.TerminateIllegalWrapper(env, illegal_reward=-1)
+    env = wrappers.AssertOutOfBoundsWrapper(env)
+    env = wrappers.OrderEnforcingWrapper(env)
+    return env
 
 
 if __name__ == "__main__":

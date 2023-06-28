@@ -1,23 +1,24 @@
 from typing import Dict, List
 from quoridor import Quoridor
-from Environment.utils import convert_quoridor_move_to_discrete
 import numpy as np
+from Environment.utils import convert_quoridor_move_to_discrete
 
 
 class ShortestPathPolicy:
     """
-    Shortest path policy
-    This policy is used to find the action that follows the shortest path between two nodes
+    Shortest path policy.
+    This policy is used to find the action that follows the shortest path between two nodes.
     """
 
     def get_action(self, game: Quoridor) -> int:
         """
-        Get the action that follows the shortest path between two nodes
+        Get the action that follows the shortest path between two nodes.
 
         Parameters
         ----------
-        board : Quoridor
-            The board.
+        game : Quoridor
+            The game instance.
+
         Returns
         -------
         int
@@ -40,15 +41,20 @@ class ShortestPathPolicy:
         waiting_player_pos: str,
         goal: str,
     ) -> List[str]:
-        """Get the shortest path between the player position and the goal
+        """
+        Get the shortest path between the player position and the goal.
+
         Parameters
         ----------
         board : Dict[str, List[str]]
             The board.
-        pos : str
-            The player position.
+        current_player_pos : str
+            The current player position.
+        waiting_player_pos : str
+            The waiting player position.
         goal : str
             The goal.
+
         Returns
         -------
         List[str]
@@ -63,9 +69,24 @@ class ShortestPathPolicy:
         return path
 
     def update_board(
-        self, board: Dict[str, List[str]], current_player_pos: str, waiting_player_pos
+        self,
+        board: Dict[str, List[str]],
+        current_player_pos: str,
+        waiting_player_pos: str,
     ) -> None:
-        """Update the nodes of the board for the current player taking into account the position of the waiting player"""
+        """
+        Update the nodes of the board for the current player taking into account
+        the position of the waiting player.
+
+        Parameters
+        ----------
+        board : Dict[str, List[str]]
+            The board.
+        current_player_pos : str
+            The current player position.
+        waiting_player_pos : str
+            The waiting player position.
+        """
         # check if the other player is in range of current player for jumping moves
         if waiting_player_pos in board[current_player_pos]:
             board[current_player_pos].remove(waiting_player_pos)
@@ -99,7 +120,9 @@ class ShortestPathPolicy:
                 )
 
     def bfs(self, board: Dict[str, List[str]], pos: str, goal: str) -> List[str]:
-        """Breadth-first search
+        """
+        Breadth-first search to find the shortest path.
+
         Parameters
         ----------
         board : Dict[str, List[str]]
@@ -108,6 +131,7 @@ class ShortestPathPolicy:
             The player position.
         goal : str
             The goal.
+
         Returns
         -------
         List[str]
@@ -148,82 +172,22 @@ class ShortestPathPolicy:
 
 class RandomPolicy:
     """
-    Random policy
-    This policy is used to find a random action
+    Random policy.
+    This policy is used to select a random action.
     """
 
-    def get_action(self, action_mask) -> int:
-        """Get a random action
+    def get_action(self, action_mask: np.array) -> int:
+        """
+        Get a random action.
+
+        Parameters
         ----------
         action_mask : np.array
             The action mask.
+
         Returns
         -------
         int
             The discrete action.
         """
         return np.random.choice(np.flatnonzero(action_mask))
-
-
-# class MCTSPolicy:
-#     """
-#     MCTS policy
-#     This policy is used to find the action that follows the MCTS algorithm
-#     """
-
-#     def get_action(self, game: Quoridor) -> int:
-#         """
-#         Get the action that follows the MCTS algorithm
-
-#         Parameters
-#         ----------
-#         board : Quoridor
-#             The board.
-#         Returns
-#         -------
-#         int
-#             The discrete action.
-#         """
-
-#         action = self.mcts(game.board, game.current_player.pos, game.waiting_player.pos)
-
-#         return convert_quoridor_move_to_discrete(action)
-
-# # main function for the Monte Carlo Tree Search
-# def monte_carlo_tree_search(self, root):
-
-#     while resources_left(time, computational power):
-#         leaf = traverse(root)
-#         simulation_result = rollout(leaf)
-#         backpropagate(leaf, simulation_result)
-
-#     return best_child(root)
-
-# # function for node traversal
-# def traverse(node):
-#     while fully_expanded(node):
-#         node = best_uct(node)
-
-#     # in case no children are present / node is terminal
-#     return pick_unvisited(node.children) or node
-
-# # function for the result of the simulation
-# def rollout(node):
-#     while non_terminal(node):
-#         node = rollout_policy(node)
-#     return result(node)
-
-# # function for randomly selecting a child node
-# def rollout_policy(node):
-#     return pick_random(node.children)
-
-# # function for backpropagation
-# def backpropagate(node, result):
-#     if is_root(node) return
-#     node.stats = update_stats(node, result)
-#     backpropagate(node.parent)
-
-# # function for selecting the best child
-# # node with highest number of visits
-# def best_child(node):
-#     pick child with highest number of visits

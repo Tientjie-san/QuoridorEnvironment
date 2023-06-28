@@ -1,13 +1,25 @@
+"""
+This module provides a function for playing a game of Quoridor.
+"""
+
 from Environment import QuoridorEnv, env
-from Agents import RandomShortestPathAgent, HumanAgent
+from Agents import *
 from Agents.agent import Agent
 
 
 def play():
+    """
+    Play a game of Quoridor.
+
+    The game is played between a human player and a shortest path agent.
+
+    The human player is controlled through the terminal, while the shortest path agent
+    uses a predetermined algorithm to make its moves.
+    """
     quoridor_env: QuoridorEnv = env()
     agents: dict[str, Agent] = {
         "player_1": HumanAgent(),
-        "player_2": RandomShortestPathAgent(quoridor_env.action_spaces["player_1"], 2),
+        "player_2": ShortestPathAgent(quoridor_env.action_spaces["player_2"], 2),
     }
 
     quoridor_env.reset()
