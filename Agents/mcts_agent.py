@@ -111,11 +111,11 @@ class MCTSAgent(Agent):
         int:
             The action to take.
         """
+        quoridor: Quoridor = convert_observation_quoridor_game(
+            observation["observation"], self.player
+        )
         # If walls are not available, use shortest path policy to speed up the game.
         if quoridor.current_player.walls == 0:
-            quoridor: Quoridor = convert_observation_quoridor_game(
-                observation["observation"], self.player
-            )
             return ShortestPathPolicy().get_action(quoridor)
 
         self.root = self.Node(info["pgn"])
@@ -340,4 +340,4 @@ class MCTSAgent(Agent):
         str:
             The corresponding state.
         """
-        return quoridor.to_pgn()
+        return quoridor.get_pgn()
