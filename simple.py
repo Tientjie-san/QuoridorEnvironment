@@ -1,3 +1,5 @@
+"""Module showing a simple example of how to use the environment."""
+
 import time
 from Environment import QuoridorEnv, env
 from Agents.random_agent import RandomAgent, RandomShortestPathAgent
