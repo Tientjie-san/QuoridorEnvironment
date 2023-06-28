@@ -18,7 +18,7 @@ To use QuoridorEnvironment, you will need:
 To install QuoridorEnvironment, you can simply clone the repository and install the required packages:
 
 ```
-git clone https://github.com/<your-username>/QuoridorEnvironment.git
+git clone git@github.com:Tientjie-san/QuoridorEnvironment.git
 cd QuoridorEnvironment
 poetry install
 ```
